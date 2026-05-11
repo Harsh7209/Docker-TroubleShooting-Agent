@@ -209,34 +209,6 @@ Runs `docker inspect` to retrieve the full container metadata — network config
 
 ---
 
-## 🧩 Extending the Agent
-
-Adding a new tool is as simple as defining a Python function with the `@tool` decorator:
-
-```python
-from langchain_core.tools import tool
-import subprocess
-
-@tool
-def get_resource_stats(container_name: str) -> str:
-    """Get live CPU and memory usage for a Docker container."""
-    result = subprocess.run(
-        ["docker", "stats", "--no-stream", container_name],
-        capture_output=True, text=True,
-    )
-    return result.stdout or result.stderr
-```
-
-Then add it to the `tools` list:
-
-```python
-tools = [list_containers, get_logs, inspect_container, get_resource_stats]
-```
-
-That's it. The agent will automatically learn when and how to use the new tool from its docstring.
-
----
-
 ## 🔄 Switching the LLM
 
 The agent uses `gemma4` by default, but you can swap in any model supported by Ollama:
@@ -275,12 +247,6 @@ docker-troubleshooter-agent/
 - [ ] Web UI frontend (Streamlit or Gradio)
 - [ ] Support for Docker Compose projects (`docker compose ps`, `docker compose logs`)
 - [ ] OpenAI / Anthropic model support as a fallback option
-
----
-
-## ⚠️ Disclaimer
-
-This agent executes **read-only** Docker CLI commands (`ps`, `logs`, `inspect`). It does not restart, stop, remove, or modify any containers. Always review suggestions before applying changes to production environments.
 
 ---
 
